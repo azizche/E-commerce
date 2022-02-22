@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'registerScreen.dart';
+import 'main.dart';
 
-main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: LoginScreen(),
-  ));
-}
-
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   bool hide = true;
+  TextEditingController password = TextEditingController();
+  TextEditingController cpassword = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 20,
                   ),
                   TextField(
+                    controller: password,
                     obscureText: hide,
                     decoration: InputDecoration(
                         hintText: "Password",
@@ -74,34 +70,70 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text("Forget?"),
-                    ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: cpassword,
+                    obscureText: hide,
+                    decoration: InputDecoration(
+                        hintText: "Confirm Password",
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              hide = !hide;
+                            });
+                          },
+                          icon: hide
+                              ? Icon(Icons.visibility_off)
+                              : Icon(Icons.visibility),
+                        ),
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20))),
                   ),
                   ElevatedButton(
                       style: TextButton.styleFrom(
                           backgroundColor: Color(0xffff6e4e),
                           padding: EdgeInsets.symmetric(horizontal: 100)),
                       onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Home()));
+                        if (password.text != cpassword.text) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("Message"),
+                                  content: Text(
+                                      "Your Enter Password Do Not Match Each Other"),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("OK"))
+                                  ],
+                                );
+                              });
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
+                        }
                       },
-                      child: Text("Login")),
+                      child: Text("Register")),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Don't have an account"),
+                      Text("Already have an account"),
                       TextButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => RegisterScreen()));
+                                    builder: (context) => LoginScreen()));
                           },
-                          child: Text("Register?"))
+                          child: Text("Login?"))
                     ],
                   )
                 ],
@@ -114,37 +146,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "E-Commerce",
+                      "Register",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 40),
                     ),
                     Text(
-                      "Login access to your account",
+                      "Create your account",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w300,
                           fontSize: 17),
                     )
                   ],
-                )),
+                ))
           ],
         ),
-      ),
-    );
-  }
-}
-
-class Home extends StatelessWidget {
-  var email;
-  Home({this.email});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xff010035),
-        title: Text("Home Screen"),
       ),
     );
   }
